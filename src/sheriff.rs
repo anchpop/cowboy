@@ -11,7 +11,7 @@ struct KeyBox {
     value: Box<dyn Any + Send + Sync>,
     // Type ID for runtime type checking
     type_id: std::any::TypeId,
-    // Functions for equality, hashing, and cloning
+    // Functions for equality and hashing
     eq_fn: fn(&Box<dyn Any + Send + Sync>, &Box<dyn Any + Send + Sync>) -> bool,
     hash_fn: fn(&Box<dyn Any + Send + Sync>, &mut dyn Hasher),
 }

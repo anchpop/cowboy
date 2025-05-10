@@ -50,6 +50,9 @@ impl<T> Cowboy<T> {
     /// Unsoundly get a mutable reference to the value.
     /// 🚨 DANGER ZONE 🚨 This function can be trivially used to get multiple mutable references to the same value, which is instantly undefined behavior.
     /// If you can use .write(), please use that instead. On the other hand... a little undefined behavior is usually okay in practice.
+    ///
+    /// This function is only available if the `evil` feature is enabled.
+    #[cfg(feature = "evil")]
     #[deprecated(
         since = "0.1.0",
         note = "🚨 DANGER ZONE 🚨 This function gives you a reference to the inner value, but won't prevent anyone else from mutating it while you have it. If anyone else uses .write() or .howdy(), that will be undefined behavior. If you can use .read(), please use that instead. On the other hand... a little undefined behavior is usually okay in practice."
@@ -76,6 +79,9 @@ impl<T> Cowboy<T> {
     /// Unsoundly get a mutable reference to the value.
     /// 🚨 DANGER ZONE 🚨 This function can be trivially used to get multiple mutable references to the same value, which is instantly undefined behavior.
     /// If you can use .write(), please use that instead. On the other hand... a little undefined behavior is usually okay in practice.
+    ///
+    /// This function is only available if the `evil` feature is enabled.
+    #[cfg(feature = "evil")]
     #[deprecated(
         since = "0.1.0",
         note = "🚨 DANGER ZONE 🚨 This function can be trivially used to get multiple mutable references to the same value, which is undefined behavior. If you can use .write(), please use that instead. On the other hand... a little undefined behavior is usually okay in practice."
