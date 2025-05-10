@@ -23,8 +23,9 @@ fn main() {
     let counter_1 = SHERIFF.get::<_, i32>("counter");
     let counter_2 = SHERIFF.get::<_, i32>(42); // Note: not &42
 
-    *counter_1.w() += 1;
-    *counter_2.w() += 2;
+    *counter.w() += 1;
+    *counter_1.w() += 2;
+    *counter_2.w() += 3;
 
     // All counters should have the same value since they're all clones of the same original counter
     assert_eq!(counter_1, counter_2);
