@@ -80,3 +80,11 @@ impl<T: std::ops::Div<Output = T> + Clone> std::ops::Div for Cowboy<T> {
         Cowboy::new(lhs_val / rhs_val)
     }
 }
+
+impl<T> Clone for Cowboy<T> {
+    fn clone(&self) -> Self {
+        Cowboy {
+            inner: self.inner.clone(),
+        }
+    }
+}

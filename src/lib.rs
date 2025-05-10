@@ -1,12 +1,14 @@
+mod sheriff;
 mod traits;
 
+pub use sheriff::{SHERIFF, Sheriff};
 use std::sync::{Arc, RwLock};
 
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Cowboy<T> {
     pub inner: Arc<RwLock<T>>,
 }

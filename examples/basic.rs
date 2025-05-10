@@ -4,6 +4,9 @@ fn main() {
     // Create a new Cowboy with a simple value
     let data = cowboy(42);
 
+    // Cloning a cowboy just gives you another pointer to the same data
+    let data_2 = data.clone();
+
     // Read the value
     {
         let value = data.r();
@@ -22,4 +25,7 @@ fn main() {
         let value = data.read();
         println!("The value is now: {}", *value);
     }
+
+    // Both cowboys are pointing to the same data
+    assert_eq!(data, data_2);
 }
