@@ -40,7 +40,7 @@ assert_eq!(counter, counter_2);
 SHERIFF.register("counter", counter);
 // Access from anywhere
 let counter = SHERIFF.get::<i32>("counter");
-counter.w().
+counter.w() += 1;
 ```
 
 ## Examples
