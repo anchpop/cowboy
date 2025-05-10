@@ -15,6 +15,7 @@ Cowboy is a thin wrapper around `Arc<RwLock<T>>` that makes it easier to work wi
 - Implements common traits like `Clone`, `PartialEq`, `Hash`, etc.
 - Supports basic arithmetic operations
 - Unsafe methods for when you want to break the rules
+- `SHERIFF` for storing cowboys for later access. 
 
 ## Quick Start
 
@@ -24,7 +25,6 @@ use cowboy::{cowboy, SHERIFF};
 // Create a shared counter
 let counter = cowboy(0);
 let counter_2 = counter.clone();
-
 
 println!("Counter: {counter}");
 
