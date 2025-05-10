@@ -6,7 +6,7 @@ Designed for quick prototyping, when you don't really want to think about lifeti
 
 ## What is it?
 
-`Cowboy<T>`  is just a wrapper for `Arc<RwLock<T>>` that's designed to be less ugly. It has more concise method names, and lots of trait implementations that make it work in more situations. (It implements `Eq`, `Hash`, `Ord`, and so on as long as the underlying type supports it). 
+`Cowboy<T>` is just a wrapper for `Arc<RwLock<T>>` that's designed to be as low-boilerplate as possible. It has more concise method names, and lots of trait implementations that make it work in more situations. (It implements `Eq`, `Hash`, `Ord`, and so on as long as the underlying type supports it). 
 
 ## Features
 
