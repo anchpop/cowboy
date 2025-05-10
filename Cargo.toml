@@ -1,9 +1,9 @@
 [package]
 name = "cowboy"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2024"
 license = "MIT"
-description = "For quick prototyping."
+description = "Safe & convenient container for quick prototyping."
 authors = ["Andre Popovitch <andre@popovit.ch>"]
 repository = "https://github.com/anchpop/tysm"
 

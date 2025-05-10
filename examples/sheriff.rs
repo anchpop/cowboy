@@ -24,23 +24,39 @@ impl Player {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct PlayerId(u32);
+
 fn main() {
     println!("Demonstrating global access to Cowboy instances\n");
 
-    // Register a player globally
-    SHERIFF.register("player1", cowboy(Player::new()));
+    // Register players with different key types
+    SHERIFF.register("player1", cowboy(Player::new())); // String key
+    SHERIFF.register(PlayerId(2), cowboy(Player::new())); // Custom type key
+    SHERIFF.register(42, cowboy(Player::new())); // Integer key
 
-    // Modify the player through the global registry
+    // Modify players through the global registry
     {
-        let player = SHERIFF.get::<Player>("player1");
+        // String key
+        let player = SHERIFF.get::<_, Player>("player1");
         player.w().name = "Gunslinger".to_string();
         player.w().shoot();
+        
+        // Custom type key
+        let player2 = SHERIFF.get::<_, Player>(&PlayerId(2));
+        player2.w().name = "Sharpshooter".to_string();
+        player2.w().shoot();
+        
+        // Integer key
+        let player3 = SHERIFF.get::<_, Player>(&42);
+        player3.w().name = "Desperado".to_string();
+        player3.w().shoot();
     }
 
-    // Create a thread that accesses the player
+    // Create a thread that accesses the player with custom key
     let handle = thread::spawn(move || {
         // Access the player from anywhere
-        let player = SHERIFF.get::<Player>("player1");
+        let player = SHERIFF.get::<_, Player>(&PlayerId(2));
         for _ in 1..=3 {
             let mut player_write = player.w();
             player_write.shoot();
@@ -51,10 +67,24 @@ fn main() {
     // Wait for the thread to complete
     handle.join().unwrap();
 
-    // Access the player again from the main thread
-    let player = SHERIFF.get::<Player>("player1");
-    let player_read = player.r();
-    println!("\nFinal player state:");
-    println!("Name: {}", player_read.name);
-    println!("Score: {}", player_read.score);
+    // Access all players again from the main thread
+    println!("\nFinal player states:");
+    
+    let player1 = SHERIFF.get::<_, Player>("player1");
+    let player1_read = player1.r();
+    println!("Player1 (String key):");
+    println!("  Name: {}", player1_read.name);
+    println!("  Score: {}", player1_read.score);
+    
+    let player2 = SHERIFF.get::<_, Player>(&PlayerId(2));
+    let player2_read = player2.r();
+    println!("Player2 (PlayerId key):");
+    println!("  Name: {}", player2_read.name);
+    println!("  Score: {}", player2_read.score);
+    
+    let player3 = SHERIFF.get::<_, Player>(&42);
+    let player3_read = player3.r();
+    println!("Player3 (Integer key):");
+    println!("  Name: {}", player3_read.name);
+    println!("  Score: {}", player3_read.score);
 }

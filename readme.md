@@ -20,7 +20,7 @@ Designed for quick prototyping, when you don't really want to think about lifeti
 ## Quick Start
 
 ```rust
-use cowboy::{cowboy, SHERIFF};
+use cowboy::{SHERIFF, cowboy};
 
 // Create a shared counter
 let counter = cowboy(0);
@@ -36,14 +36,23 @@ println!("Counter: {counter}");
 
 assert_eq!(counter, counter_2);
 
-// Add the counter to the global registry
-SHERIFF.register("counter", counter);
-// Access from anywhere
-let counter = SHERIFF.get::<i32>("counter");
-*counter.w() += 1;
+// Add counters to the global registry with different key types
+SHERIFF.register("counter", counter.clone());
+SHERIFF.register(42, counter.clone());
+
+// Access from anywhere using different key types
+let counter_1 = SHERIFF.get::<_, i32>("counter");
+let counter_2 = SHERIFF.get::<_, i32>(42); // Note: not &42
+
+*counter_1.w() += 1;
+*counter_2.w() += 2;
+
+// All counters should have the same value since they're all clones of the same original counter
+assert_eq!(counter_1, counter_2);
+println!("Counter: {counter}");
 ```
 
-I think we can all agree that you shouldn't use `Cowboy` or `SHERIFF` in production code, but I'm hopeful it can be useful for when you're prototyping and want the borrow checker to get out of your way. 
+I think we can all agree that you shouldn't use `Cowboy` or `SHERIFF` in production code, but I'm hopeful it can be useful for when you're prototyping and want the borrow checker to get out of your way.
 
 ## Examples
 
