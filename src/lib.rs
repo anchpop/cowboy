@@ -4,6 +4,15 @@ mod traits;
 pub use sheriff::{SHERIFF, Sheriff};
 use std::sync::{Arc, RwLock};
 
+/// Adds two numbers together
+///
+/// # Examples
+///
+/// ```
+/// use cowboy::add;
+///
+/// assert_eq!(add(2, 2), 4);
+/// ```
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
 }
@@ -13,7 +22,14 @@ pub struct Cowboy<T> {
 }
 
 impl<T> Cowboy<T> {
-    /// Create a new `Cowboy`
+    /// Create a new `Cowboy` wrapping the provided value
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = Cowboy::new(42);
+    /// assert_eq!(*cowboy.read(), 42);
+    /// ```
     pub fn new(inner: T) -> Self {
         Cowboy {
             inner: Arc::new(RwLock::new(inner)),
@@ -22,27 +38,65 @@ impl<T> Cowboy<T> {
 
     /// Get a read guard to the inner value.
     /// Shorthand for [`Cowboy::read()`]
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = 42.cowboy();
+    /// assert_eq!(*cowboy.r(), 42);
+    /// ```
     pub fn r(&self) -> std::sync::RwLockReadGuard<'_, T> {
         self.read()
     }
 
     /// Get a read guard to the inner value.
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = 42.cowboy();
+    /// assert_eq!(*cowboy.read(), 42);
+    /// ```
     pub fn read(&self) -> std::sync::RwLockReadGuard<'_, T> {
         self.inner.read().unwrap()
     }
 
     /// Get a write guard to the inner value.
     /// Shorthand for [`Cowboy::write()`]
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = 42.cowboy();
+    /// *cowboy.w() = 84;
+    /// assert_eq!(*cowboy.read(), 84);
+    /// ```
     pub fn w(&self) -> std::sync::RwLockWriteGuard<'_, T> {
         self.write()
     }
 
     /// Get a write guard to the inner value.
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = 42.cowboy();
+    /// *cowboy.write() = 84;
+    /// assert_eq!(*cowboy.read(), 84);
+    /// ```
     pub fn write(&self) -> std::sync::RwLockWriteGuard<'_, T> {
         self.inner.write().unwrap()
     }
 
-    /// Modify the inner value.
+    /// Modify the inner value using a function.
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = 42.cowboy();
+    /// cowboy.modify(|value| *value *= 2);
+    /// assert_eq!(*cowboy.read(), 84);
+    /// ```
     pub fn modify<F>(&self, f: F)
     where
         F: FnOnce(&mut T),
@@ -52,12 +106,29 @@ impl<T> Cowboy<T> {
     }
 
     /// Set the inner value.
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = 42.cowboy();
+    /// cowboy.set(84);
+    /// assert_eq!(*cowboy.read(), 84);
+    /// ```
     pub fn set(&self, value: T) {
         let mut guard = self.write();
         *guard = value;
     }
 
     /// Replace the inner value (returning the old value).
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = 42.cowboy();
+    /// let old_value = cowboy.replace(84);
+    /// assert_eq!(old_value, 42);
+    /// assert_eq!(*cowboy.read(), 84);
+    /// ```
     pub fn replace(&self, value: T) -> T {
         let mut guard = self.write();
         std::mem::replace(&mut *guard, value)
@@ -126,6 +197,14 @@ impl<T> Cowboy<T> {
 
 impl<T: Clone> Cowboy<T> {
     /// Clone the contents of the `Cowboy`
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let cowboy = Cowboy::new(42);
+    /// let cloned = cowboy.get_cloned();
+    /// assert_eq!(cloned, 42);
+    /// ```
     pub fn get_cloned(&self) -> T {
         self.read().clone()
     }

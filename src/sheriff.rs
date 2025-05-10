@@ -86,6 +86,13 @@ impl Sheriff {
     }
 
     /// Register a Cowboy instance with a key
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// let player = "Player".to_string().cowboy();
+    /// SHERIFF.register("player1", player);
+    /// ```
     pub fn register<K, T>(&self, key: K, cowboy: Cowboy<T>)
     where
         K: Eq + Hash + Clone + Send + Sync + 'static,
@@ -96,6 +103,18 @@ impl Sheriff {
     }
 
     /// Get a Cowboy instance by key
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// // First register a value
+    /// let player = "Player".to_string().cowboy();
+    /// SHERIFF.register("player1", player);
+    ///
+    /// // Then retrieve it
+    /// let retrieved: Cowboy<String> = SHERIFF.get("player1");
+    /// assert_eq!(*retrieved.read(), "Player");
+    /// ```
     #[track_caller]
     pub fn get<K, T>(&self, key: K) -> Cowboy<T>
     where
@@ -113,6 +132,18 @@ impl Sheriff {
     }
 
     /// Check if a key is registered
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// // Register a value
+    /// let player = "Player".to_string().cowboy();
+    /// SHERIFF.register("player1", player);
+    ///
+    /// // Check if keys exist
+    /// assert!(SHERIFF.contains(&"player1"));
+    /// assert!(!SHERIFF.contains(&"player2"));
+    /// ```
     pub fn contains<K>(&self, key: &K) -> bool
     where
         K: Eq + Hash + Clone + Send + Sync + 'static,
@@ -122,6 +153,21 @@ impl Sheriff {
     }
 
     /// Remove a registered Cowboy instance
+    ///
+    /// ```rust
+    /// use cowboy::*;
+    ///
+    /// // Register a value
+    /// let player = "Player".to_string().cowboy();
+    /// SHERIFF.register("player1", player);
+    ///
+    /// // Remove it
+    /// assert!(SHERIFF.remove(&"player1"));
+    /// assert!(!SHERIFF.contains(&"player1"));
+    ///
+    /// // Trying to remove a non-existent key returns false
+    /// assert!(!SHERIFF.remove(&"player2"));
+    /// ```
     pub fn remove<K>(&self, key: &K) -> bool
     where
         K: Eq + Hash + Clone + Send + Sync + 'static,
