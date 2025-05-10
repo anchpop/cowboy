@@ -1,6 +1,6 @@
 [package]
 name = "cowboy"
-version = "0.1.11"
+version = "0.1.12"
 edition = "2024"
 license = "MIT"
 description = "Safe & convenient container for quick prototyping."
@@ -8,9 +8,13 @@ authors = ["Andre Popovitch <andre@popovit.ch>"]
 repository = "https://github.com/anchpop/cowboy"
 
 [features]
+# Enable unsound functions (read/write without locking)
 evil = []
+
+# Enable serde support
 serde = ["dep:serde", "dep:serde_json"]
 
 [dependencies]
+dashmap = "6.1.0"
 serde = { version = "1", optional = true }
 serde_json = { version = "1", optional = true }

@@ -87,6 +87,12 @@ impl<T: std::ops::Div<Output = T> + Clone> std::ops::Div for Cowboy<T> {
     }
 }
 
+impl<T: Default> Default for Cowboy<T> {
+    fn default() -> Self {
+        Cowboy::new(T::default())
+    }
+}
+
 impl<T> Clone for Cowboy<T> {
     fn clone(&self) -> Self {
         Cowboy {

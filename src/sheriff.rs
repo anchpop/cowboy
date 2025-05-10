@@ -1,7 +1,8 @@
 use std::any::Any;
-use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
-use std::sync::{LazyLock, RwLock};
+use std::sync::LazyLock;
+
+use dashmap::DashMap;
 
 use crate::Cowboy;
 
@@ -74,14 +75,14 @@ impl Hash for KeyBox {
 
 /// A global registry for Cowboy instances
 pub struct Sheriff {
-    registry: RwLock<HashMap<KeyBox, Box<dyn Any + Send + Sync>>>,
+    registry: DashMap<KeyBox, Box<dyn Any + Send + Sync>>,
 }
 
 impl Sheriff {
     /// Create a new Sheriff instance
     fn new() -> Self {
         Self {
-            registry: RwLock::new(HashMap::new()),
+            registry: DashMap::new(),
         }
     }
 
@@ -98,8 +99,7 @@ impl Sheriff {
         K: Eq + Hash + Clone + Send + Sync + 'static,
         T: 'static + Send + Sync,
     {
-        let mut registry = self.registry.write().unwrap();
-        registry.insert(KeyBox::new(key), Box::new(cowboy));
+        self.registry.insert(KeyBox::new(key), Box::new(cowboy));
     }
 
     /// Get a Cowboy instance by key
@@ -121,13 +121,11 @@ impl Sheriff {
         K: Eq + Hash + Send + Sync + 'static,
         T: 'static + Send + Sync,
     {
-        let registry = self.registry.read().unwrap();
         let key_box = KeyBox::new(key);
 
-        registry
+        self.registry
             .get(&key_box)
-            .and_then(|boxed| boxed.downcast_ref::<Cowboy<T>>())
-            .cloned()
+            .and_then(|boxed| boxed.downcast_ref::<Cowboy<T>>().cloned())
             .expect("No Cowboy found with that key")
     }
 
@@ -148,8 +146,7 @@ impl Sheriff {
     where
         K: Eq + Hash + Clone + Send + Sync + 'static,
     {
-        let registry = self.registry.read().unwrap();
-        registry.contains_key(&KeyBox::new(key.clone()))
+        self.registry.contains_key(&KeyBox::new(key.clone()))
     }
 
     /// Remove a registered Cowboy instance
@@ -172,8 +169,7 @@ impl Sheriff {
     where
         K: Eq + Hash + Clone + Send + Sync + 'static,
     {
-        let mut registry = self.registry.write().unwrap();
-        registry.remove(&KeyBox::new(key.clone())).is_some()
+        self.registry.remove(&KeyBox::new(key.clone())).is_some()
     }
 }
 

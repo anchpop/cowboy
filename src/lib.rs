@@ -1,21 +1,26 @@
+//! # Cowboy
+//!
+//! A safe and convenient container for quick prototyping. (Essentially a wrapper around `Arc<RwLock<T>>`)
+//!
+//! You should probably not use this crate in production, but it's a fun way to prototype something.
+//!
+//! ```rust
+//! use cowboy::*;
+//!
+//! let cowboy = 42.cowboy();
+//! *cowboy.w() = 84;
+//! assert_eq!(*cowboy.r(), 84);
+//! ```
+//!
+//! ## Sheriff
+//!
+//!
+
 mod sheriff;
 mod traits;
 
 pub use sheriff::{SHERIFF, Sheriff};
 use std::sync::{Arc, RwLock};
-
-/// Adds two numbers together
-///
-/// # Examples
-///
-/// ```
-/// use cowboy::add;
-///
-/// assert_eq!(add(2, 2), 4);
-/// ```
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
 
 pub struct Cowboy<T> {
     pub inner: Arc<RwLock<T>>,
@@ -217,16 +222,5 @@ pub trait IntoCowboy: Sized {
 impl<T> IntoCowboy for T {
     fn cowboy(self) -> Cowboy<Self> {
         Cowboy::new(self)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
     }
 }
