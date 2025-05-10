@@ -51,6 +51,18 @@ impl<T> Cowboy<T> {
         f(&mut *guard);
     }
 
+    /// Set the inner value.
+    pub fn set(&self, value: T) {
+        let mut guard = self.write();
+        *guard = value;
+    }
+
+    /// Replace the inner value (returning the old value).
+    pub fn replace(&self, value: T) -> T {
+        let mut guard = self.write();
+        std::mem::replace(&mut *guard, value)
+    }
+
     /// Unsoundly get a mutable reference to the value.
     /// 🚨 DANGER ZONE 🚨 This function can be trivially used to get multiple mutable references to the same value, which is instantly undefined behavior.
     /// If you can use .write(), please use that instead. On the other hand... a little undefined behavior is usually okay in practice.
@@ -114,7 +126,7 @@ impl<T> Cowboy<T> {
 
 impl<T: Clone> Cowboy<T> {
     /// Clone the contents of the `Cowboy`
-    pub fn fresh(&self) -> T {
+    pub fn get_cloned(&self) -> T {
         self.read().clone()
     }
 }
