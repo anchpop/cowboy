@@ -6,7 +6,9 @@ Designed for quick prototyping, when you don't really want to think about lifeti
 
 ## What is it?
 
-Cowboy is a thin wrapper around `Arc<RwLock<T>>` that makes it easier to work with shared, mutable state across threads. It provides simple methods for reading and writing data without the hassle of explicit locking and error handling. It also provides 
+Cowboy is a thin wrapper around `Arc<RwLock<T>>` that makes it easier to work with shared, mutable state across threads. It provides simple methods for reading and writing data without the hassle of explicit locking and error handling. 
+
+`Cowboy` has some convenient trait implementations. You can compare `Cowboy` values for equality, put them in `HashSet`s and `BTreeSet`s, and so on (provided the backing type implements `Eq`, `Hash`, or `Ord` respectively). `Cowboy` also implements `Debug` and `Display`.
 
 ## Features
 
@@ -40,7 +42,7 @@ assert_eq!(counter, counter_2);
 SHERIFF.register("counter", counter);
 // Access from anywhere
 let counter = SHERIFF.get::<i32>("counter");
-counter.w() += 1;
+*counter.w() += 1;
 ```
 
 I think we can all agree that you shouldn't use `Cowboy` or `SHERIFF` in production code, but I'm hopeful it can be useful for when you're prototyping and want the borrow checker to get out of your way. 

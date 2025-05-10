@@ -1,31 +1,23 @@
-use cowboy::cowboy;
-
 fn main() {
-    // Create a new Cowboy with a simple value
-    let data = cowboy(42);
+    use cowboy::{SHERIFF, cowboy};
 
-    // Cloning a cowboy just gives you another pointer to the same data
-    let data_2 = data.clone();
+    // Create a shared counter
+    let counter = cowboy(0);
+    let counter_2 = counter.clone();
 
-    // Read the value
-    {
-        let value = data.r();
-        println!("The value is: {}", *value);
-    }
+    println!("Counter: {counter}");
 
     // Modify the value
     {
-        let mut value = data.w();
-        *value = 100;
-        println!("Updated value to: {}", *value);
+        let mut value = counter.w();
+        *value += 1;
     }
 
-    // Read again to confirm the change
-    {
-        let value = data.read();
-        println!("The value is now: {}", *value);
-    }
+    assert_eq!(counter, counter_2);
 
-    // Both cowboys are pointing to the same data
-    assert_eq!(data, data_2);
+    // Add the counter to the global registry
+    SHERIFF.register("counter", counter);
+    // Access from anywhere
+    let counter = SHERIFF.get::<i32>("counter");
+    *counter.w() += 1;
 }

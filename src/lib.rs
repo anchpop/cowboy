@@ -12,29 +12,37 @@ pub struct Cowboy<T> {
     pub inner: Arc<RwLock<T>>,
 }
 
+/// Create a new `Cowboy`
 pub fn cowboy<T>(inner: T) -> Cowboy<T> {
     Cowboy::new(inner)
 }
 
 impl<T> Cowboy<T> {
+    /// Create a new `Cowboy`
     pub fn new(inner: T) -> Self {
         Cowboy {
             inner: Arc::new(RwLock::new(inner)),
         }
     }
 
+    /// Get a read guard to the inner value.
+    /// Shorthand for [`Cowboy::read()`]
     pub fn r(&self) -> std::sync::RwLockReadGuard<'_, T> {
         self.read()
     }
 
+    /// Get a read guard to the inner value.
     pub fn read(&self) -> std::sync::RwLockReadGuard<'_, T> {
         self.inner.read().unwrap()
     }
 
+    /// Get a write guard to the inner value.
+    /// Shorthand for [`Cowboy::write()`]
     pub fn w(&self) -> std::sync::RwLockWriteGuard<'_, T> {
         self.write()
     }
 
+    /// Get a write guard to the inner value.
     pub fn write(&self) -> std::sync::RwLockWriteGuard<'_, T> {
         self.inner.write().unwrap()
     }

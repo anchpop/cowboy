@@ -94,3 +94,20 @@ impl<T> Clone for Cowboy<T> {
         }
     }
 }
+
+impl<T> Cowboy<Vec<T>> {
+    /// Safely push to a vector
+    pub fn push(&self, item: T) {
+        self.write().push(item);
+    }
+
+    /// Get the length of the vector
+    pub fn len(&self) -> usize {
+        self.read().len()
+    }
+
+    /// Check if the vector is empty
+    pub fn is_empty(&self) -> bool {
+        self.read().is_empty()
+    }
+}
