@@ -1,8 +1,8 @@
 fn main() {
-    use cowboy::{SHERIFF, cowboy};
+    use cowboy::*;
 
     // Create a shared counter
-    let counter = cowboy(0);
+    let counter = 0.cowboy();
     let counter_2 = counter.clone();
 
     println!("Counter: {counter}");

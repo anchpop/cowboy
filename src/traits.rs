@@ -111,3 +111,58 @@ impl<T> Cowboy<Vec<T>> {
         self.read().is_empty()
     }
 }
+
+#[cfg(feature = "serde")]
+impl<T: serde::Serialize> serde::Serialize for Cowboy<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.inner.read().unwrap().serialize(serializer)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de, T: serde::Deserialize<'de>> serde::Deserialize<'de> for Cowboy<T> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value = T::deserialize(deserializer)?;
+        Ok(Cowboy::new(value))
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<T: serde::Serialize> Cowboy<T> {
+    #[track_caller]
+    pub fn save(&self, path: &str) {
+        use std::fs::File;
+        use std::io::BufWriter;
+        let file = File::create(path).unwrap_or_else(|e| {
+            panic!("Failed to create file: {e}");
+        });
+        let writer = BufWriter::new(file);
+        let s = self.read();
+        serde_json::to_writer(writer, &*s).unwrap_or_else(|e| {
+            panic!("Failed to serialize: {e}");
+        });
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<T: serde::de::DeserializeOwned> Cowboy<T> {
+    #[track_caller]
+    pub fn load(path: &str) -> Self {
+        use std::fs::File;
+        use std::io::BufReader;
+        let file = File::open(path).unwrap_or_else(|e| {
+            panic!("Failed to open file: {e}");
+        });
+        let reader = BufReader::new(file);
+        let s = serde_json::from_reader(reader).unwrap_or_else(|e| {
+            panic!("Failed to deserialize: {e}");
+        });
+        Cowboy::new(s)
+    }
+}

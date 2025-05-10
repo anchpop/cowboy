@@ -12,9 +12,9 @@ fn main() {
 
     #[cfg(feature = "evil")]
     {
-        use cowboy::cowboy;
+        use cowboy::*;
         // Create a shared counter
-        let counter = cowboy(42);
+        let counter = 42.cowboy();
 
         // Using howdy() to get a reference without locking
         let value_ref: &i32 = counter.howdy();

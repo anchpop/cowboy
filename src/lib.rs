@@ -12,11 +12,6 @@ pub struct Cowboy<T> {
     pub inner: Arc<RwLock<T>>,
 }
 
-/// Create a new `Cowboy`
-pub fn cowboy<T>(inner: T) -> Cowboy<T> {
-    Cowboy::new(inner)
-}
-
 impl<T> Cowboy<T> {
     /// Create a new `Cowboy`
     pub fn new(inner: T) -> Self {
@@ -45,6 +40,15 @@ impl<T> Cowboy<T> {
     /// Get a write guard to the inner value.
     pub fn write(&self) -> std::sync::RwLockWriteGuard<'_, T> {
         self.inner.write().unwrap()
+    }
+
+    /// Modify the inner value.
+    pub fn modify<F>(&self, f: F)
+    where
+        F: FnOnce(&mut T),
+    {
+        let mut guard = self.write();
+        f(&mut *guard);
     }
 
     /// Unsoundly get a mutable reference to the value.
@@ -105,6 +109,23 @@ impl<T> Cowboy<T> {
             unsafe { std::mem::transmute::<&mut T, &mut T>(inner_mut_ref) };
 
         extended_lifetime_mut_ref
+    }
+}
+
+impl<T: Clone> Cowboy<T> {
+    /// Clone the contents of the `Cowboy`
+    pub fn fresh(&self) -> T {
+        self.read().clone()
+    }
+}
+
+pub trait IntoCowboy: Sized {
+    fn cowboy(self) -> Cowboy<Self>;
+}
+
+impl<T> IntoCowboy for T {
+    fn cowboy(self) -> Cowboy<Self> {
+        Cowboy::new(self)
     }
 }
 

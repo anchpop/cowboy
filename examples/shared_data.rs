@@ -1,10 +1,10 @@
-use cowboy::cowboy;
+use cowboy::*;
 use std::thread;
 use std::time::Duration;
 
 fn main() {
     // Create a shared counter
-    let counter = cowboy(0);
+    let counter = 0.cowboy();
 
     // Clone the Cowboy for different threads
     let counter1 = counter.clone();

@@ -13,46 +13,72 @@ Designed for quick prototyping, when you don't really want to think about lifeti
 - Thread-safe shared data with interior mutability.
 - Simple API: just use `.r()` to read and `.w()` to write.
 - Implements common traits like `Clone`, `PartialEq`, `Hash`, etc.
-- Supports basic arithmetic operations.
-- Unsafe methods for when you want to break the rules.
-- `SHERIFF` for storing cowboys for later access. 
+- Unsafe methods for those who want to break the rules.
+- `SHERIFF` for global cowboy storage. 
+- Zero-boilerplate serialization and deserialization.
 
 ## Quick Start
 
-```rust
-use cowboy::{SHERIFF, cowboy};
+I think we can all agree that you shouldn't use `Cowboy` or `SHERIFF` in production code, but I'm hopeful it can be useful for when you're prototyping and want the borrow checker to get out of your way. Here's how they work:
 
-// Create a shared counter
-let counter = cowboy(0);
-let counter_2 = counter.clone();
+### Basic usage
+
+```rust
+use cowboy::*;
+
+// use `.cowboy()` on any value to get a Cowboy version of it.
+let counter = 0.cowboy();
 
 println!("Counter: {counter}");
 
+// Cloning a cowboy gives you a pointer to the same underlying data
+let counter_2 = counter.clone();
+
 // Modify the value
-{
-    let mut value = counter.w();
-    *value += 1;
-}
+*counter.w() += 1;
 
-assert_eq!(counter, counter_2);
+// Both counter and counter_2 were modified
+assert_eq!(counter, counter_2); 
+```
 
-// Add counters to the global registry with different key types
+### Global storage with `SHERIFF`
+
+```rust
+use cowboy::*;
+
+let counter = 0.cowboy();
+
+// You can register cowboys with the SHERIFF using any key type
 SHERIFF.register("counter", counter.clone());
 SHERIFF.register(42, counter.clone());
 
-// Access from anywhere using different key types
+// Access from anywhere
 let counter_1 = SHERIFF.get::<_, i32>("counter");
 let counter_2 = SHERIFF.get::<_, i32>(42); // Note: not &42
 
 *counter_1.w() += 1;
-*counter_2.w() += 2;
+*counter_1.w() += 2;
+*counter_2.w() += 3;
 
 // All counters should have the same value since they're all clones of the same original counter
 assert_eq!(counter_1, counter_2);
 println!("Counter: {counter}");
 ```
 
-I think we can all agree that you shouldn't use `Cowboy` or `SHERIFF` in production code, but I'm hopeful it can be useful for when you're prototyping and want the borrow checker to get out of your way.
+### Zero-boilerplate saving and loading
+
+```rust
+use cowboy::*;
+
+let counter = 0.cowboy();
+
+counter.save("counter.json");
+
+let new_counter = Cowboy::<i64>::load("counter.json");
+
+println!("Counter: {counter}");
+```
+
 
 ## Examples
 
