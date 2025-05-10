@@ -6,17 +6,15 @@ Designed for quick prototyping, when you don't really want to think about lifeti
 
 ## What is it?
 
-Cowboy is a thin wrapper around `Arc<RwLock<T>>` that makes it easier to work with shared, mutable state across threads. It provides simple methods for reading and writing data without the hassle of explicit locking and error handling. 
-
-`Cowboy` has some convenient trait implementations. You can compare `Cowboy` values for equality, put them in `HashSet`s and `BTreeSet`s, and so on (provided the backing type implements `Eq`, `Hash`, or `Ord` respectively). `Cowboy` also implements `Debug` and `Display`.
+`Cowboy<T>`  is just a wrapper for `Arc<RwLock<T>>` that's designed to be less ugly. It has more concise method names, and lots of trait implementations that make it work in more cases (you can use `Eq`, `Hash`, `Ord`, and so on as long as the underlying type supports it). 
 
 ## Features
 
-- Thread-safe shared data with interior mutability
-- Simple API: just use `.r()` to read and `.w()` to write
+- Thread-safe shared data with interior mutability.
+- Simple API: just use `.r()` to read and `.w()` to write.
 - Implements common traits like `Clone`, `PartialEq`, `Hash`, etc.
-- Supports basic arithmetic operations
-- Unsafe methods for when you want to break the rules
+- Supports basic arithmetic operations.
+- Unsafe methods for when you want to break the rules.
 - `SHERIFF` for storing cowboys for later access. 
 
 ## Quick Start
