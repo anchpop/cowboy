@@ -35,6 +35,12 @@ impl<T: std::fmt::Display> std::fmt::Display for Cowboy<T> {
     }
 }
 
+impl<T: std::fmt::Debug> std::fmt::Debug for Cowboy<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.inner.read().unwrap())
+    }
+}
+
 impl<T> From<T> for Cowboy<T> {
     fn from(value: T) -> Self {
         Cowboy::new(value)
