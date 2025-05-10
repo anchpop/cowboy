@@ -4,19 +4,6 @@ mod traits;
 pub use sheriff::{SHERIFF, Sheriff};
 use std::sync::{Arc, RwLock};
 
-/// Adds two numbers together
-///
-/// # Examples
-///
-/// ```
-/// use cowboy::add;
-///
-/// assert_eq!(add(2, 2), 4);
-/// ```
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 pub struct Cowboy<T> {
     pub inner: Arc<RwLock<T>>,
 }
