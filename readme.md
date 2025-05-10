@@ -43,6 +43,8 @@ let counter = SHERIFF.get::<i32>("counter");
 counter.w() += 1;
 ```
 
+I think we can all agree that you shouldn't use `Cowboy` or `SHERIFF` in production code, but I'm hopeful it can be useful for when you're prototyping and want the borrow checker to get out of your way. 
+
 ## Examples
 
 Check out the examples directory for more usage patterns:
