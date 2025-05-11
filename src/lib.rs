@@ -14,7 +14,16 @@
 //!
 //! ## Sheriff
 //!
+//! ```rust
+//! use cowboy::*;
 //!
+//! SHERIFF.register("player1_score", 0_i32.cowboy()); // String key
+//! let score = SHERIFF.get::<_, i32>("player1_score");
+//! *score.w() += 1;
+//! assert_eq!(*score.r(), 1);
+//! ```
+//!
+//! (The Sheriff should really not be used in production.)
 
 mod sheriff;
 mod traits;

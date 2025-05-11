@@ -174,4 +174,9 @@ impl Sheriff {
 }
 
 /// Global Sheriff instance
-pub static SHERIFF: LazyLock<Sheriff> = LazyLock::new(Sheriff::new);
+pub static SHERIFF: LazyLock<Sheriff> = LazyLock::new(|| {
+    if !cfg!(debug_assertions) {
+        eprintln!("Use of SHERIFF in production is not recommended!");
+    }
+    Sheriff::new()
+});

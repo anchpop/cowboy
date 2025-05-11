@@ -43,12 +43,12 @@ fn main() {
         player.w().shoot();
 
         // Custom type key
-        let player2 = SHERIFF.get::<_, Player>(&PlayerId(2));
+        let player2 = SHERIFF.get::<_, Player>(PlayerId(2));
         player2.w().name = "Sharpshooter".to_string();
         player2.w().shoot();
 
         // Integer key
-        let player3 = SHERIFF.get::<_, Player>(&42);
+        let player3 = SHERIFF.get::<_, Player>(42);
         player3.w().name = "Desperado".to_string();
         player3.w().shoot();
     }
@@ -56,7 +56,7 @@ fn main() {
     // Create a thread that accesses the player with custom key
     let handle = thread::spawn(move || {
         // Access the player from anywhere
-        let player = SHERIFF.get::<_, Player>(&PlayerId(2));
+        let player = SHERIFF.get::<_, Player>(PlayerId(2));
         for _ in 1..=3 {
             let mut player_write = player.w();
             player_write.shoot();
@@ -76,13 +76,13 @@ fn main() {
     println!("  Name: {}", player1_read.name);
     println!("  Score: {}", player1_read.score);
 
-    let player2 = SHERIFF.get::<_, Player>(&PlayerId(2));
+    let player2 = SHERIFF.get::<_, Player>(PlayerId(2));
     let player2_read = player2.r();
     println!("Player2 (PlayerId key):");
     println!("  Name: {}", player2_read.name);
     println!("  Score: {}", player2_read.score);
 
-    let player3 = SHERIFF.get::<_, Player>(&42);
+    let player3 = SHERIFF.get::<_, Player>(42);
     let player3_read = player3.r();
     println!("Player3 (Integer key):");
     println!("  Name: {}", player3_read.name);

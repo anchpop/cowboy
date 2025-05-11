@@ -1,6 +1,6 @@
 [package]
 name = "cowboy"
-version = "0.1.13"
+version = "0.1.14"
 edition = "2024"
 license = "MIT"
 description = "Safe & convenient container for quick prototyping."
