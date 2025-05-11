@@ -17,11 +17,11 @@ fn main() {
         let counter = 42.cowboy();
 
         // Using howdy() to get a reference without locking
-        let value_ref: &i32 = counter.howdy();
+        let value_ref: &i32 = unsafe { counter.howdy() };
         println!("Value via howdy(): {}", value_ref);
 
         // Using yehaw() to get a mutable reference without proper locking
-        let value_mut: &mut i32 = counter.yehaw();
+        let value_mut: &mut i32 = unsafe { counter.yehaw() };
         *value_mut = 100;
         println!("Modified value via yehaw() to: {}", value_mut);
 
@@ -30,8 +30,8 @@ fn main() {
 
         // This is undefined behavior!
         println!("\n🚨 UNDEFINED BEHAVIOR DEMONSTRATION 🚨");
-        let ref1: &mut i32 = counter.yehaw();
-        let ref2: &mut i32 = counter.yehaw(); // This creates a second mutable reference
+        let ref1: &mut i32 = unsafe { counter.yehaw() };
+        let ref2: &mut i32 = unsafe { counter.yehaw() }; // This creates a second mutable reference
 
         // Modifying through both references
         *ref1 = 200;

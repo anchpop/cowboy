@@ -151,7 +151,7 @@ impl<T> Cowboy<T> {
     )]
     #[must_use = "If you're calling this function, at least use the returned reference"]
     #[allow(clippy::transmute_ptr_to_ref)] // To avoid clippy warnings about the transmute
-    pub fn howdy(&self) -> &T {
+    pub unsafe fn howdy(&self) -> &T {
         let guard: std::sync::RwLockReadGuard<T> = self.inner.read().expect("RwLock poisoned");
         let inner_ref: &T = &guard;
 
@@ -181,7 +181,7 @@ impl<T> Cowboy<T> {
     #[must_use = "If you're calling this function, at least use the returned reference"]
     #[allow(clippy::transmute_ptr_to_ref)] // To avoid clippy warnings about the transmute
     #[allow(clippy::mut_from_ref)] // To avoid clippy warnings about the transmute
-    pub fn yehaw(&self) -> &mut T {
+    pub unsafe fn yehaw(&self) -> &mut T {
         let mut guard: std::sync::RwLockWriteGuard<T> =
             self.inner.write().expect("RwLock poisoned");
         let inner_mut_ref: &mut T = &mut guard;
