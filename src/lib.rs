@@ -167,7 +167,7 @@ impl<T> Cowboy<T> {
         // Unsafely extend the lifetime of the mutable reference.
         // This is where the unsoundness lies. We are telling the compiler
         // that `inner_mut_ref` (which is tied to `guard`) can actually live
-        // as long as `&self` (the lifetime of the `Cowboy` reference passed to `yehaw`).
+        // as long as `&self` (the lifetime of the `Cowboy` reference passed to `yeehaw`).
         // This is a lie because `guard` will be dropped at the end of this function,
         // releasing the lock.
         let extended_lifetime_mut_ref: &T =
@@ -190,7 +190,7 @@ impl<T> Cowboy<T> {
     #[must_use = "If you're calling this function, at least use the returned reference"]
     #[allow(clippy::transmute_ptr_to_ref)] // To avoid clippy warnings about the transmute
     #[allow(clippy::mut_from_ref)] // To avoid clippy warnings about the transmute
-    pub unsafe fn yehaw(&self) -> &mut T {
+    pub unsafe fn yeehaw(&self) -> &mut T {
         let mut guard: std::sync::RwLockWriteGuard<T> =
             self.inner.write().expect("RwLock poisoned");
         let inner_mut_ref: &mut T = &mut guard;
@@ -198,7 +198,7 @@ impl<T> Cowboy<T> {
         // Unsafely extend the lifetime of the mutable reference.
         // This is where the unsoundness lies. We are telling the compiler
         // that `inner_mut_ref` (which is tied to `guard`) can actually live
-        // as long as `&self` (the lifetime of the `Cowboy` reference passed to `yehaw`).
+        // as long as `&self` (the lifetime of the `Cowboy` reference passed to `yeehaw`).
         // This is a lie because `guard` will be dropped at the end of this function,
         // releasing the lock.
         let extended_lifetime_mut_ref: &mut T =
