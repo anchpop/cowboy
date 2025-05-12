@@ -2,7 +2,7 @@
 
 fn main() {
     println!("🚨 DANGER ZONE 🚨");
-    println!("This example demonstrates the unsafe methods howdy() and yehaw()");
+    println!("This example demonstrates the unsafe methods howdy() and yeehaw()");
     println!("These methods are for prototyping and will probably lead to undefined behavior!\n");
 
     #[cfg(not(feature = "evil"))]
@@ -20,18 +20,18 @@ fn main() {
         let value_ref: &i32 = unsafe { counter.howdy() };
         println!("Value via howdy(): {}", value_ref);
 
-        // Using yehaw() to get a mutable reference without proper locking
-        let value_mut: &mut i32 = unsafe { counter.yehaw() };
+        // Using yeehaw() to get a mutable reference without proper locking
+        let value_mut: &mut i32 = unsafe { counter.yeehaw() };
         *value_mut = 100;
-        println!("Modified value via yehaw() to: {}", value_mut);
+        println!("Modified value via yeehaw() to: {}", value_mut);
 
         // Verify the change using the safe API
         println!("Value via safe r(): {}", *counter.r());
 
         // This is undefined behavior!
         println!("\n🚨 UNDEFINED BEHAVIOR DEMONSTRATION 🚨");
-        let ref1: &mut i32 = unsafe { counter.yehaw() };
-        let ref2: &mut i32 = unsafe { counter.yehaw() }; // This creates a second mutable reference
+        let ref1: &mut i32 = unsafe { counter.yeehaw() };
+        let ref2: &mut i32 = unsafe { counter.yeehaw() }; // This creates a second mutable reference
 
         // Modifying through both references
         *ref1 = 200;
